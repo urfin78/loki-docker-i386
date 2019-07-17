@@ -1,3 +1,4 @@
+FROM grafana/loki as buildtrigger
 FROM i386/golang:1.12.7-stretch as gobuild
 ENV GOPATH=/go/src/app
 WORKDIR /go/src/app
