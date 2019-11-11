@@ -1,5 +1,5 @@
 FROM grafana/loki as buildtrigger
-FROM i386/golang:1.12.7-stretch as gobuild
+FROM i386/golang:1.13-buster as gobuild
 ENV GOPATH=/go/src/app
 WORKDIR /go/src/app
 RUN go get github.com/grafana/loki; exit 0
