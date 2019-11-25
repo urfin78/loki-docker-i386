@@ -21,4 +21,4 @@ jobs:
       run: docker tag loki:latest docker.pkg.github.com/urfin78/loki-docker-i386/loki:latest
 
     - name: Push the image to GPR
-      run: docker push docker.pkg.github.com/urfin78/loki-docker-i386/loki:latest .
+      run: docker push docker.pkg.github.com/urfin78/loki-docker-i386/loki:latest
