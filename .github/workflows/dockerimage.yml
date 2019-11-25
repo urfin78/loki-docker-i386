@@ -1,14 +1,22 @@
-name: Docker Image CI
-
-on: [push]
+name: Docker image build and push
+on: 
+  push:
+    branches:
+    - master
 
 jobs:
-
   build:
-
+    name: Build
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v1
+
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag loki:$(date +%s)
+      run: docker build -t docker.pkg.github.com/urfin78/loki-docker-i386/loki:latest .
+
+    - name: Push the image to GPR
+      run: |
+        docker login docker.pkg.github.com -u urfin78 -p "${GITHUB_PACKAGE_REGISTRY_TOKEN}"
+        docker push docker.pkg.github.com/urfin78/loki-docker-i386/loki:latest .
+      env:
+        GITHUB_PACKAGE_REGISTRY_TOKEN: ${{ secrets.GITHUB_PACKAGE_REGISTRY_TOKEN }}
