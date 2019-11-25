@@ -10,13 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
+    
+    - name: Login to GitHub Package Registry
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login docker.pkg.github.com -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
     - name: Build the Docker image
       run: docker build -t docker.pkg.github.com/urfin78/loki-docker-i386/loki:latest .
+      
+    - name: Tag the Docker image
+      run: docker tag loki:latest docker.pkg.github.com/urfin78/loki-docker-i386/loki:latest
 
     - name: Push the image to GPR
-      run: |
-        docker login docker.pkg.github.com -u urfin78 -p "${GITHUB_PACKAGE_REGISTRY_TOKEN}"
-        docker push docker.pkg.github.com/urfin78/loki-docker-i386/loki:latest .
-      env:
-        GITHUB_PACKAGE_REGISTRY_TOKEN: ${{ secrets.GITHUB_PACKAGE_REGISTRY_TOKEN }}
+      run: docker push docker.pkg.github.com/urfin78/loki-docker-i386/loki:latest .
