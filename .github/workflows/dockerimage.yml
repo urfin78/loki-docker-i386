@@ -17,7 +17,8 @@ jobs:
     - uses: actions/checkout@v1
 
     - name: Get latest Loki release
-      run: echo "::set-env name=VERSION::$(curl -s "https://api.github.com/repos/grafana/loki/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')"
+      run: LOKI_LATEST=$(curl -s "https://api.github.com/repos/grafana/loki/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
+      run: echo "::set-env name=VERSION::$LOKI_LATEST"
     
     - name: Login to GitHub Package Registry
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u "${{ github.actor }}" --password-stdin
