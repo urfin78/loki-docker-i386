@@ -10,45 +10,21 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    env:
-      VERSION: latest
 
     steps:
     - uses: actions/checkout@v1
 
-    - name: Get latest Loki release
-      run: LOKI_LATEST=$(curl -s "https://api.github.com/repos/grafana/loki/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
-      run: echo "::set-env name=VERSION::$LOKI_LATEST"
-    
     - name: Login to GitHub Package Registry
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u "${{ github.actor }}" --password-stdin
 
     - name: Build the latest Docker image
-      run: docker build -t --build-arg VERSION=master loki:latest .
+      run: docker build -t loki:latest .
       if: success()
-      if: $VERSION=latest
     
-    - name: Build the Docker image
-      run: docker build -t --build-arg VERSION=$VERSION loki:$VERSION .
-      if: success()
-      if: $VERSION != latest
-      
     - name: Tag the latest Docker image
-      run: docker tag loki:$VERSION docker.pkg.github.com/urfin78/loki-docker-i386/loki:$VERSION
+      run: docker tag loki:latest docker.pkg.github.com/urfin78/loki-docker-i386/loki:latest
       if: success()
-      if: $VERSION=latest
-
-    - name: Tag the Docker image
-      run: docker tag loki:$VERSION docker.pkg.github.com/urfin78/loki-docker-i386/loki:$VERSION
-      if: success()
-      if: $VERSION != latest
       
     - name: Push the latest image to GPR
-      run: docker push docker.pkg.github.com/urfin78/loki-docker-i386/loki:$VERSION
+      run: docker push docker.pkg.github.com/urfin78/loki-docker-i386/loki:latest
       if: success()
-      if: $VERSION=latest
-      
-    - name: Push the image to GPR
-      run: docker push docker.pkg.github.com/urfin78/loki-docker-i386/loki:$VERSION
-      if: success()
-      if: $VERSION != latest

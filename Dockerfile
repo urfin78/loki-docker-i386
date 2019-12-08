@@ -1,12 +1,10 @@
 FROM grafana/loki as buildtrigger
 FROM i386/golang:1.13-buster as gobuild
-ARG VERSION
 ENV GOPATH=/go/src/app
 WORKDIR /go/src/app
 RUN go get github.com/grafana/loki; exit 0
 WORKDIR /go/src/app/src/github.com/grafana/loki
-RUN git checkout tags/$VERSION && \
-    go build ./cmd/loki
+RUN go build ./cmd/loki
 
 FROM i386/debian:stretch-slim as loki
 RUN groupadd -g 3100 loki && useradd -u 3100 --no-create-home -s /bin/false --no-log-init -g loki loki
