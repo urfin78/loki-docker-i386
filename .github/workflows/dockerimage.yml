@@ -20,13 +20,32 @@ jobs:
         echo "::set-env name=VERSION::$LOKI_LATEST"
       shell: bash
     
-    - name: Login to GitHub Package Registry
-      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u "${{ github.actor }}" --password-stdin
-
-    - name: Build the latest Docker image
+     - name: Build the latest Docker image
       run: docker build --build-arg VERSION=master -t loki:latest .
       if: success() && env.VERSION == 'latest'
-    
+
     - name: Build the Docker image
       run: docker build --build-arg VERSION=$VERSION -t loki:$VERSION .
       if: success() && env.VERSION != 'latest'
+    
+    - name: Login to GitHub Package Registry
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u "${{ github.actor }}" --password-stdin
+
+    - name: Tag the latest Docker image
+      run: docker tag loki:$VERSION docker.pkg.github.com/urfin78/loki-docker-i386/loki:$VERSION
+      if: success()
+
+    - name: Logout to GitHub Registry
+      run: docker logout docker.pkg.github.com
+
+    - name: Login to Dockerhub Registry
+      run: echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
+      if: success()
+      
+    - name: Tag the latest Docker image
+      run: docker tag loki:$VERSION urfin78/loki-i386:$VERSION
+      if: success() 
+   
+    - name: Push the latest image to Dockerhub
+      run: docker push urfin78/loki-i386:$VERSION
+      if: success()
