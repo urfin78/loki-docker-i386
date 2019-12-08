@@ -25,8 +25,8 @@ jobs:
 
     - name: Build the latest Docker image
       run: docker build -t --build-arg VERSION=master loki:latest .
-      if: success() && $VERSION == latest
+      if: success() && env.VERSION == 'latest'
     
     - name: Build the Docker image
       run: docker build -t --build-arg VERSION=$VERSION loki:$VERSION .
-      if: success() && $VERSION != latest
+      if: success() && env.VERSION != 'latest'
