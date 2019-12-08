@@ -2,9 +2,7 @@ name: Docker image build and push
 on: 
   push:
     branches:
-    - master
-  schedule:
-    - cron:  '0 */12 * * *'
+    - testing
 
 jobs:
   build:
@@ -30,25 +28,5 @@ jobs:
     
     - name: Build the Docker image
       run: docker build -t --build-arg VERSION=$VERSION loki:$VERSION .
-      if: success()
-      if: $VERSION != latest
-      
-    - name: Tag the latest Docker image
-      run: docker tag loki:$VERSION docker.pkg.github.com/urfin78/loki-docker-i386/loki:$VERSION
-      if: success()
-      if: $VERSION=latest
-
-    - name: Tag the Docker image
-      run: docker tag loki:$VERSION docker.pkg.github.com/urfin78/loki-docker-i386/loki:$VERSION
-      if: success()
-      if: $VERSION != latest
-      
-    - name: Push the latest image to GPR
-      run: docker push docker.pkg.github.com/urfin78/loki-docker-i386/loki:$VERSION
-      if: success()
-      if: $VERSION=latest
-      
-    - name: Push the image to GPR
-      run: docker push docker.pkg.github.com/urfin78/loki-docker-i386/loki:$VERSION
       if: success()
       if: $VERSION != latest
