@@ -35,6 +35,10 @@ jobs:
       run: docker tag loki:$VERSION docker.pkg.github.com/urfin78/loki-docker-i386/loki:$VERSION
       if: success()
 
+    - name: Push the latest image to GPR
+      run: docker push docker.pkg.github.com/urfin78/loki-docker-i386/loki:$VERSION
+      if: success()
+
     - name: Logout to GitHub Registry
       run: docker logout docker.pkg.github.com
 
