@@ -20,7 +20,7 @@ jobs:
         echo "::set-env name=VERSION::$LOKI_LATEST"
       shell: bash
     
-     - name: Build the latest Docker image
+    - name: Build the latest Docker image
       run: docker build --build-arg VERSION=master -t loki:latest .
       if: success() && env.VERSION == 'latest'
 
