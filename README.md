@@ -9,6 +9,7 @@ Build loki docker container for i386
 
 Available tags:
 * latest
+*v1.2.0
 *v1.1.0
 
 ## License
