@@ -1,8 +1,11 @@
 name: Docker image build and push
+
 on: 
   push:
     branches:
-    - testing
+      - master
+  schedule:
+    - cron:  '0 5 * * *'
 
 jobs:
   build:
