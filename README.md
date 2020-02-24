@@ -7,9 +7,6 @@ EXPERIMENTAL!
 
 Build loki docker container for i386
 
-Available tags:
-* latest
-
 ## License
 This code is distributed under GPL v3.0 License:
 https://github.com/urfin78/loki-docker-i386/blob/master/LICENSE
