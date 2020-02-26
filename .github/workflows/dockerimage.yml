@@ -68,11 +68,11 @@ jobs:
       run: docker push urfin78/loki-i386:latest
       if: success()
       
-    - name: Tag the latest Docker image
+    - name: Tag the new version Docker image
       run: docker tag loki:$VERSION urfin78/loki-i386:$VERSION
       if: success() && env.VERSION != env.AVAIL
    
-    - name: Push the latest image to Dockerhub
+    - name: Push the new version image to Dockerhub
       run: docker push urfin78/loki-i386:$VERSION
       if: success() && env.VERSION != env.AVAIL
     
