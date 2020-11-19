@@ -18,7 +18,7 @@ jobs:
     - name: Get latest Loki release
       run: |
         export LOKI_LATEST=$(curl -s "https://api.github.com/repos/grafana/loki/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
-        echo "::set-env name=VERSION::$LOKI_LATEST"
+        echo "VERSION=$LOKI_LATEST" >> ${GITHUB_ENV}
       shell: bash
     
     - name: Always build the latest Docker image
@@ -27,7 +27,7 @@ jobs:
     - name: Compare release with already pushed version
       run: |
         export LOKI_AVAIL=$(curl -s "https://hub.docker.com/v2/repositories/urfin78/loki-i386/tags/"|grep -Po "$VERSION")
-        echo "::set-env name=AVAIL::$LOKI_AVAIL"
+        echo "AVAIL=$LOKI_AVAIL" >> ${GITHUB_ENV}
       if: success()
 
     - name: Build the Docker image for new version
