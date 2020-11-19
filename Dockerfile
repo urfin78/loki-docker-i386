@@ -1,4 +1,4 @@
-FROM i386/golang:1.13-buster as gobuild
+FROM i386/golang:1.15.4-buster as gobuild
 ARG VERSION
 ENV GOPATH=/go/src/app
 WORKDIR /go/src/app
