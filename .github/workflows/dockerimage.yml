@@ -79,7 +79,7 @@ jobs:
     - name: Push the latest image to Dockerhub
       id: pushlatestdockerhub
       run: docker push urfin78/loki-i386:latest
-      if: steps.taglatestdockerhub == 'success'
+      if: steps.taglatestdockerhub.outcome == 'success'
       
     - name: Tag the new version Docker image
       run: docker tag loki:$VERSION urfin78/loki-i386:$VERSION
@@ -88,7 +88,7 @@ jobs:
     - name: Push the new version image to Dockerhub
       id: pushnewdockerhub
       run: docker push urfin78/loki-i386:$VERSION
-      if: steps.tagnewdockerhub == 'success' && env.VERSION != env.AVAIL
+      if: steps.tagnewdockerhub.outcome == 'success' && env.VERSION != env.AVAIL
     
     - name: Logout from Dockerhub Registry
       run: docker logout
