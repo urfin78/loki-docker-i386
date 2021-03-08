@@ -1,0 +1,34 @@
+name: Docker image build
+
+on: 
+  pull-request:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build Image
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2.3.4
+
+    - name: Get latest Loki release
+      run: |
+        export LOKI_LATEST=$(curl -s "https://api.github.com/repos/grafana/loki/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
+        echo "VERSION=$LOKI_LATEST" >> ${GITHUB_ENV}
+      shell: bash
+    
+    - name: Always build the latest Docker image
+      run: docker build --build-arg VERSION=master -t loki:latest .
+
+    - name: Compare release with already pushed version
+      run: |
+        export LOKI_AVAIL=$(curl -s "https://hub.docker.com/v2/repositories/urfin78/loki-i386/tags/"|grep -Po "$VERSION")
+        echo "AVAIL=$LOKI_AVAIL" >> ${GITHUB_ENV}
+      if: success()
+
+    - name: Build the Docker image for new version
+      run: docker build --build-arg VERSION=$VERSION -t loki:$VERSION .
+      if: success() && env.VERSION != env.AVAIL
+    
