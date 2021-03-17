@@ -1,16 +1,30 @@
-FROM i386/golang:1.16.0-buster as gobuild
-ARG VERSION
-ENV GOPATH=/go/src/app
-WORKDIR /go/src/app
-RUN git clone https://github.com/grafana/loki $GOPATH/src/github.com/grafana/loki
-WORKDIR /go/src/app/src/github.com/grafana/loki
-RUN if [ $VERSION != "master" ]; then git checkout tags/$VERSION; fi
-RUN make loki
+ARG BUILD_IMAGE=grafana/loki-build-image:0.12.0
+# Directories in this file are referenced from the root of the project not this folder
+# This file is intended to be called from the root like so:
+# docker build -t grafana/loki -f cmd/loki/Dockerfile .
 
-FROM i386/debian:stretch-slim as loki
-RUN groupadd -g 3100 loki && useradd -u 3100 --no-create-home -s /bin/false --no-log-init -g loki loki
-COPY --from=gobuild --chown=3100:3100 /go/src/app/src/github.com/grafana/loki/cmd/loki/loki /loki/loki
-COPY loki-local-config.yaml /loki/loki-local-config.yaml
-USER 3100:3100
+FROM --platform=linux/amd64 $BUILD_IMAGE as build
+RUN git clone http://github.com/grafana/loki /src/loki
+WORKDIR /src/loki
+RUN make clean && GOARCH=386 make BUILD_IN_CONTAINER=true loki
+RUN ls -lha /src/loki/cmd/loki
+
+FROM alpine:3.9
+
+RUN apk add --no-cache ca-certificates
+
+COPY --from=build /src/loki/cmd/loki/loki /usr/bin/loki
+COPY --from=build /src/loki/cmd/loki/loki-local-config.yaml /etc/loki/local-config.yaml
+
+RUN addgroup -g 10001 -S loki && \
+    adduser -u 10001 -S loki -G loki
+RUN mkdir -p /loki && \
+    chown -R 10001:10001 /etc/loki /loki
+
+# See https://github.com/grafana/loki/issues/1928
+RUN [ ! -e /etc/nsswitch.conf ] && echo 'hosts: files dns' > /etc/nsswitch.conf
+
+USER loki
 EXPOSE 3100
-CMD ["/loki/loki", "-config.file=/loki/loki-local-config.yaml"]
+ENTRYPOINT [ "/usr/bin/loki" ]
+CMD ["-config.file=/etc/loki/local-config.yaml"]
