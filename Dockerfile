@@ -9,7 +9,7 @@ WORKDIR /src/loki
 RUN if [ $VERSION != "master" ]; then git checkout tags/$VERSION; fi
 RUN make clean && GOARCH=386 make BUILD_IN_CONTAINER=true loki
 
-FROM alpine:3.9
+FROM alpine:3.13.2
 RUN apk add --no-cache ca-certificates
 COPY --from=build /src/loki/cmd/loki/loki /usr/bin/loki
 COPY --from=build /src/loki/cmd/loki/loki-local-config.yaml /etc/loki/local-config.yaml
