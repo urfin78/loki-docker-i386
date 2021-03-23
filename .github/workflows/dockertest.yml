@@ -4,31 +4,56 @@ on:
   pull_request:
     branches:
       - master
+  push:
+    branches-ignore:
+      - 'master'
 
 jobs:
   build:
     name: Build Image
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [amd64, arm64, arm, 386]
 
     steps:
-    - uses: actions/checkout@v2.3.4
-
+    - uses: actions/checkout@v2
+    
     - name: Get latest Loki release
       run: |
         export LOKI_LATEST=$(curl -s "https://api.github.com/repos/grafana/loki/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
         echo "VERSION=$LOKI_LATEST" >> ${GITHUB_ENV}
       shell: bash
-    
-    - name: Always build the latest Docker image
-      run: docker build --build-arg VERSION=master -t loki:latest .
+
+    - name: Prepare multiarch
+      run: sudo podman run --rm --privileged multiarch/qemu-user-static --reset -p yes
+
+    - name: Build latest image
+      uses: redhat-actions/buildah-build@v2
+      with:
+        image: loki
+        archs: ${{ matrix.arch }}
+        tags: latest-${{ matrix.arch }}
+        dockerfiles: |
+          ./Dockerfile
+        build-args:
+          VERSION=master
 
     - name: Compare release with already pushed version
       run: |
         export LOKI_AVAIL=$(curl -s "https://hub.docker.com/v2/repositories/urfin78/loki-i386/tags/"|grep -Po "$VERSION")
         echo "AVAIL=$LOKI_AVAIL" >> ${GITHUB_ENV}
-      if: success()
 
-    - name: Build the Docker image for new version
-      run: docker build --build-arg VERSION=$VERSION -t loki:$VERSION .
+    - name: Build version image
+      uses: redhat-actions/buildah-build@v2
+      with:
+        image: loki
+        archs: ${{ matrix.arch }}
+        tags: $VERSION-${{ matrix.arch }}
+        dockerfiles: |
+          ./Dockerfile
+        build-args:
+          VERSION=$VERSION
       if: success() && env.VERSION != env.AVAIL
     
