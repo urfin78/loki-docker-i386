@@ -1,10 +1,10 @@
 ARG BUILD_IMAGE=grafana/loki-build-image:0.13.0
+FROM --platform=linux/amd64 $BUILD_IMAGE as build
 ARG VERSION
 ARG GOARCH
-FROM --platform=linux/amd64 $BUILD_IMAGE as build
 RUN git clone http://github.com/grafana/loki /src/loki
 WORKDIR /src/loki
-RUN if [ "$VERSION" != "master" ]; then git checkout tags/$VERSION; fi
+RUN if [ $VERSION != "master" ]; then git checkout tags/$VERSION; fi
 RUN make clean && GOARCH=$GOARCH make BUILD_IN_CONTAINER=true loki
 
 FROM alpine:3.9
