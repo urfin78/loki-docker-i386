@@ -1,13 +1,15 @@
-name: Docker image build
+name: Docker image build and push
 
 on:
   pull_request:
     types: [ closed ]
+  push:
+    branches:
+      - 'master'
 
 jobs:
   build-latest:
     if: github.event.pull_request.merged == true
-    id: build-latest-image
     name: Build latest Image
     runs-on: ubuntu-latest
     strategy:
@@ -22,9 +24,10 @@ jobs:
       run: sudo podman run --rm --privileged multiarch/qemu-user-static --reset -p yes
 
     - name: Build latest image
+      id: build-latest-image
       uses: redhat-actions/buildah-build@v2
       with:
-        image: loki
+        image: ghcr.io/${{ github.repository_owner }}/loki
         archs: ${{ matrix.arch }}
         tags: latest-${{ matrix.arch }}
         dockerfiles: |
@@ -41,7 +44,6 @@ jobs:
         registry: ghcr.io/${{ github.repository_owner }}
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
-      if: env.VERSION != env.AVAIL
     
   build-version:
     if: github.event.pull_request.merged == true
@@ -74,7 +76,7 @@ jobs:
       id: build-version-image
       uses: redhat-actions/buildah-build@v2
       with:
-        image: loki
+        image: ghcr.io/${{ github.repository_owner }}/loki
         archs: ${{ matrix.arch }}
         tags: ${{ env.VERSION }}-${{ matrix.arch }}
         dockerfiles: |
