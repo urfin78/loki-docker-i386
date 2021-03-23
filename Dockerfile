@@ -1,13 +1,12 @@
-ARG BUILD_IMAGE=grafana/loki-build-image:0.12.0
-# Directories in this file are referenced from the root of the project not this folder
-# This file is intended to be called from the root like so:
-# docker build -t grafana/loki -f cmd/loki/Dockerfile .
+LABEL org.opencontainers.image.source=https://github.com/urfin78/loki-docker-i386
+ARG BUILD_IMAGE=grafana/loki-build-image:0.13.0
 ARG VERSION
+ARG GOARCH
 FROM --platform=linux/amd64 $BUILD_IMAGE as build
 RUN git clone http://github.com/grafana/loki /src/loki
 WORKDIR /src/loki
 RUN if [ $VERSION != "master" ]; then git checkout tags/$VERSION; fi
-RUN make clean && GOARCH=386 make BUILD_IN_CONTAINER=true loki
+RUN make clean && GOARCH=$GOARCH make BUILD_IN_CONTAINER=true loki
 
 FROM alpine:3.9
 RUN apk add --no-cache ca-certificates

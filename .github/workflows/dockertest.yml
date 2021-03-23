@@ -37,8 +37,10 @@ jobs:
         tags: latest-${{ matrix.arch }}
         dockerfiles: |
           ./Dockerfile
-        build-args:
+        build-args: |
           VERSION=master
+          GOARCH=${{ matrix.arch }}
+
 
     - name: Compare release with already pushed version
       run: |
@@ -53,7 +55,9 @@ jobs:
         tags: $VERSION-${{ matrix.arch }}
         dockerfiles: |
           ./Dockerfile
-        build-args:
+        build-args: |
           VERSION=$VERSION
+          GOARCH=${{ matrix.arch }}
+
       if: success() && env.VERSION != env.AVAIL
     
