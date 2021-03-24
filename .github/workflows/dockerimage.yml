@@ -81,11 +81,11 @@ jobs:
       with:
         image: loki
         archs: ${{ matrix.arch }}
-        tags: ${{needs.build-version.outputs.version}}-${{ matrix.arch }}
+        tags: ${{ env.VERSION }}-${{ matrix.arch }}
         dockerfiles: |
           ./Dockerfile
         build-args: |
-          VERSION=${{needs.build-version.outputs.version}}
+          VERSION=${{ env.VERSION }}
           GOARCH=${{ matrix.arch }}
       if: env.VERSION != env.AVAIL
     
