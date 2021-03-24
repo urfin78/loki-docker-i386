@@ -47,6 +47,8 @@ jobs:
     
   build-version:
     if: ${{ github.event.pull_request.merged == true || ( github.ref == 'refs/heads/master' && github.event_name == 'push' ) }}
+    outputs:
+      version: ${ steps.loki-version.outputs.version }}
     name: Build Version Image
     runs-on: ubuntu-latest
     strategy:
@@ -61,6 +63,7 @@ jobs:
       run: |
         export LOKI_LATEST=$(curl -s "https://api.github.com/repos/grafana/loki/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
         echo "VERSION=$LOKI_LATEST" >> ${GITHUB_ENV}
+        echo "::set-output name=version::$LOKI_LATEST"
       shell: bash
 
     - name: Compare release with already pushed version
@@ -78,11 +81,11 @@ jobs:
       with:
         image: loki
         archs: ${{ matrix.arch }}
-        tags: ${{ env.VERSION }}-${{ matrix.arch }}
+        tags: ${{needs.build-version.outputs.version}}-${{ matrix.arch }}
         dockerfiles: |
           ./Dockerfile
         build-args: |
-          VERSION=${{ env.VERSION }}
+          VERSION=${{needs.build-version.outputs.version}}
           GOARCH=${{ matrix.arch }}
       if: env.VERSION != env.AVAIL
     
@@ -125,7 +128,7 @@ jobs:
 
     - name: push manifest
       run: |
-        docker push ghcr.io/${{ github.repository_owner }}/loki:latest
+        docker manifest push ghcr.io/${{ github.repository_owner }}/loki:latest
         
   create-manifest-version:
     needs: build-version
@@ -143,17 +146,17 @@ jobs:
     
     - name: pull images
       run: |
-        docker pull ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }}-arm64 
-        docker pull ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }}-amd64
-        docker pull ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }}-386
+        docker pull ghcr.io/${{ github.repository_owner }}/loki:${{needs.build-version.outputs.version}}-arm64 
+        docker pull ghcr.io/${{ github.repository_owner }}/loki:${{needs.build-version.outputs.version}}-amd64
+        docker pull ghcr.io/${{ github.repository_owner }}/loki:${{needs.build-version.outputs.version}}-386
 
     - name: create manifest list
       run: |
-        docker manifest create ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }} ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }}-arm64 ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }}-amd64 ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }}-386
-        docker manifest annotate ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }} ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }}-arm64 --arch arm64
-        docker manifest annotate ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }} ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }}-amd64 --arch amd64
-        docker manifest annotate ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }} ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }}-386 --arch 386
+        docker manifest create ghcr.io/${{ github.repository_owner }}/loki:${{needs.build-version.outputs.version}} ghcr.io/${{ github.repository_owner }}/loki:${{needs.build-version.outputs.version}}-arm64 ghcr.io/${{ github.repository_owner }}/loki:${{needs.build-version.outputs.version}}-amd64 ghcr.io/${{ github.repository_owner }}/loki:${{needs.build-version.outputs.version}}-386
+        docker manifest annotate ghcr.io/${{ github.repository_owner }}/loki:${{needs.build-version.outputs.version}} ghcr.io/${{ github.repository_owner }}/loki:${{needs.build-version.outputs.version}}-arm64 --arch arm64
+        docker manifest annotate ghcr.io/${{ github.repository_owner }}/loki:${{needs.build-version.outputs.version}} ghcr.io/${{ github.repository_owner }}/loki:${{needs.build-version.outputs.version}}-amd64 --arch amd64
+        docker manifest annotate ghcr.io/${{ github.repository_owner }}/loki:${{needs.build-version.outputs.version}} ghcr.io/${{ github.repository_owner }}/loki:${{needs.build-version.outputs.version}}-386 --arch 386
 
     - name: push manifest
       run: |
-        docker push ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }}
+        docker manifest push ghcr.io/${{ github.repository_owner }}/loki:${{needs.build-version.outputs.version}}
