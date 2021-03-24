@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-latest:
-    if: github.event.pull_request.merged == true
+    if: ${{ github.event.pull_request.merged == true || ( github.ref == 'refs/heads/master' && github.event_name == 'push' ) }}
     name: Build latest Image
     runs-on: ubuntu-latest
     strategy:
@@ -46,7 +46,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     
   build-version:
-    if: github.event.pull_request.merged == true
+    if: ${{ github.event.pull_request.merged == true || ( github.ref == 'refs/heads/master' && github.event_name == 'push' ) }}
     name: Build Version Image
     runs-on: ubuntu-latest
     strategy:
