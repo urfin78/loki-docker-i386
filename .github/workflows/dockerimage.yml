@@ -27,7 +27,7 @@ jobs:
       id: build-latest-image
       uses: redhat-actions/buildah-build@v2
       with:
-        image: ghcr.io/${{ github.repository_owner }}/loki
+        image: loki
         archs: ${{ matrix.arch }}
         tags: latest-${{ matrix.arch }}
         dockerfiles: |
@@ -76,7 +76,7 @@ jobs:
       id: build-version-image
       uses: redhat-actions/buildah-build@v2
       with:
-        image: ghcr.io/${{ github.repository_owner }}/loki
+        image: loki
         archs: ${{ matrix.arch }}
         tags: ${{ env.VERSION }}-${{ matrix.arch }}
         dockerfiles: |
