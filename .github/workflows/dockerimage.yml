@@ -48,7 +48,7 @@ jobs:
   build-version:
     if: ${{ github.event.pull_request.merged == true || ( github.ref == 'refs/heads/master' && github.event_name == 'push' ) }}
     outputs:
-      version: ${ steps.loki-version.outputs.version }}
+      version: ${{ steps.loki-version.outputs.version }}
     name: Build Version Image
     runs-on: ubuntu-latest
     strategy:
