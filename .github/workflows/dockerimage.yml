@@ -97,7 +97,7 @@ jobs:
       if: env.VERSION != env.AVAIL
 
   create-manifest-latest:
-    needs: build-latest, build-version
+    needs: build-latest
     if: ${{ github.event.pull_request.merged == true || ( github.ref == 'refs/heads/master' && github.event_name == 'push' ) }}
     name: Create Manifest
     runs-on: ubuntu-latest
