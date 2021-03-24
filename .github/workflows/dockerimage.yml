@@ -118,7 +118,7 @@ jobs:
 
     - name: create manifest list
       run: |
-        docker manifest create ghcr.io/${{ github.repository_owner }}/loki:latest ghcr.io/${{ github.repository_owner }}/loki:latest-arm64 docker pull ghcr.io/${{ github.repository_owner }}/loki:latest-amd64 docker pull ghcr.io/${{ github.repository_owner }}/loki:latest-386
+        docker manifest create ghcr.io/${{ github.repository_owner }}/loki:latest ghcr.io/${{ github.repository_owner }}/loki:latest-arm64 ghcr.io/${{ github.repository_owner }}/loki:latest-amd64 ghcr.io/${{ github.repository_owner }}/loki:latest-386
         docker manifest annotate ghcr.io/${{ github.repository_owner }}/loki:latest ghcr.io/${{ github.repository_owner }}/loki:latest-arm64 --arch arm64
         docker manifest annotate ghcr.io/${{ github.repository_owner }}/loki:latest ghcr.io/${{ github.repository_owner }}/loki:latest-amd64 --arch amd64
         docker manifest annotate ghcr.io/${{ github.repository_owner }}/loki:latest ghcr.io/${{ github.repository_owner }}/loki:latest-386 --arch 386
@@ -149,7 +149,7 @@ jobs:
 
     - name: create manifest list
       run: |
-        docker manifest create ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }} ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }}-arm64 docker pull ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }}-amd64 docker pull ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }}-386
+        docker manifest create ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }} ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }}-arm64 ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }}-amd64 ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }}-386
         docker manifest annotate ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }} ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }}-arm64 --arch arm64
         docker manifest annotate ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }} ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }}-amd64 --arch amd64
         docker manifest annotate ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }} ghcr.io/${{ github.repository_owner }}/loki:${{ env.VERSION }}-386 --arch 386
