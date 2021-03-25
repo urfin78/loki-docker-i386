@@ -15,10 +15,10 @@ jobs:
     - name: Get package versions
       id: get_versions
       uses: octokit/request-action@v2.x
-        with:
-          route: GET /users/${{ github.repository_owner }}/packages/container/loki/versions
-          owner: octokit
-          repo: request-action
-        env:
+      with:
+        route: GET /users/${{ github.repository_owner }}/packages/container/loki/versions
+        owner: octokit
+        repo: request-action
+      env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: "echo available versions: ${{ steps.get_versions.outputs.data }}"
+    - run: "echo available versions: ${{ steps.get_versions.outputs.data }}"
