@@ -1,0 +1,24 @@
+name: GHCR API Test
+
+on: 
+  push:
+    branches:
+      - 'integrate-ghcr'
+    
+jobs:
+  api:
+    name: API
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Get package versions
+      uses: octokit/request-action@v2.x
+        id: get_versions
+        with:
+          route: GET /users/${{ github.repository_owner }}/packages/container/loki/versions
+          owner: octokit
+          repo: request-action
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: "echo available versions: ${{ steps.get_versions.outputs.data }}"
