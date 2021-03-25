@@ -13,8 +13,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Get package versions
+      id: get_versions
       uses: octokit/request-action@v2.x
-        id: get_versions
         with:
           route: GET /users/${{ github.repository_owner }}/packages/container/loki/versions
           owner: octokit
