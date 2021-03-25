@@ -16,8 +16,7 @@ jobs:
       id: get_versions
       uses: octokit/request-action@v2.x
       with:
-        route: GET /users/{owner}/packages/container/loki/versions
-        owner: ${{ github.repository_owner }}
+        route: GET /user/packages/container/loki/versions
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - run: "echo available versions: ${{ steps.get_versions.outputs.data }}"
