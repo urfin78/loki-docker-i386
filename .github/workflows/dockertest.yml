@@ -52,11 +52,17 @@ jobs:
         echo "VERSION=$LOKI_LATEST" >> ${GITHUB_ENV}
       shell: bash
 
-    - name: Compare release with already pushed version
-      run: |
-        export LOKI_AVAIL=$(curl -s "https://hub.docker.com/v2/repositories/urfin78/loki-i386/tags/"|grep -Po "$VERSION")
+    - name: check if latest loki is already a package version
+      id: get_versions
+      uses: octokit/request-action@v2.x
+      with:
+        route: GET /user/packages/container/loki/versions
+      env:
+        GITHUB_TOKEN: ${{ secrets.PACKAGES }}
+    - run: |
+        export LOKI_AVAIL=$(echo "${{ steps.get_versions.outputs.data }}"|grep -Po "${VERSION}"|head -1)
         echo "AVAIL=$LOKI_AVAIL" >> ${GITHUB_ENV}
-
+    
     - name: Prepare multiarch
       run: sudo podman run --rm --privileged multiarch/qemu-user-static --reset -p yes
       if: env.VERSION != env.AVAIL
