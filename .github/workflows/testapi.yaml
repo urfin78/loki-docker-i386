@@ -12,11 +12,28 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Get package versions
+    - name: Get latest Loki release
+      run: |
+        export LOKI_LATEST=$(curl -s "https://api.github.com/repos/grafana/loki/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
+        echo "VERSION=$LOKI_LATEST" >> ${GITHUB_ENV}
+      shell: bash
+    - name: check if latest loki is already a package version
       id: get_versions
       uses: octokit/request-action@v2.x
       with:
         route: GET /user/packages/container/loki/versions
       env:
         GITHUB_TOKEN: ${{ secrets.PACKAGES }}
-    - run: "echo available versions: ${{ steps.get_versions.outputs.data }}"
+    - run: |
+        export LOKI_AVAIL=$(echo "${{ steps.get_versions.outputs.data }}"|grep -Po "${VERSION}"|head -1)
+        echo "AVAIL=$LOKI_AVAIL" >> ${GITHUB_ENV}
+    
+    - name: Run only if not
+      run: |
+        echo "is not there VERSION: ${{ env.VERSION }} AVAIL: ${{ env.AVAIL }}"
+      if: env.VERSION != env.AVAIL
+
+    - name: Run only if 
+      run: |
+        echo "is already there VERSION: ${{ env.VERSION }} AVAIL: ${{ env.AVAIL }}"
+      if: env.VERSION == env.AVAIL
