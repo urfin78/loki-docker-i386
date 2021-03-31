@@ -1,4 +1,4 @@
-ARG BUILD_IMAGE=grafana/loki-build-image:0.13.0
+ARG BUILD_IMAGE=registry.hub.docker.com/grafana/loki-build-image:0.13.0
 FROM --platform=linux/amd64 $BUILD_IMAGE as build
 ARG VERSION
 ARG GOARCH
@@ -8,7 +8,7 @@ WORKDIR /src/loki
 RUN if [ $VERSION != "master" ]; then git checkout tags/$VERSION; fi
 RUN make clean && GOARCH=$GOARCH make BUILD_IN_CONTAINER=false loki
 
-FROM alpine:3.13
+FROM registry.hub.docker.com/library/alpine:3.13
 RUN apk add --no-cache ca-certificates
 RUN mkdir -p /etc/loki /loki
 COPY --from=build /src/loki/cmd/loki/loki /usr/bin/loki
