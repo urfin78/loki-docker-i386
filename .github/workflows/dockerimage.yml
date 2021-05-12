@@ -43,7 +43,7 @@ jobs:
           GOARCH=${{ matrix.arch }}
 
     - name: Push latest image to ghcr
-      uses: redhat-actions/push-to-registry@v2
+      uses: redhat-actions/push-to-registry@v2.3.1
       with:
         image: ${{ steps.build-latest-image.outputs.image }}
         tags: ${{ steps.build-latest-image.outputs.tags }}
@@ -109,7 +109,7 @@ jobs:
       if: env.VERSION != env.AVAIL
     
     - name: Push version image to ghcr
-      uses: redhat-actions/push-to-registry@v2
+      uses: redhat-actions/push-to-registry@v2.3.1
       with:
         image: ${{ steps.build-version-image.outputs.image }}
         tags: ${{ steps.build-version-image.outputs.tags }}
