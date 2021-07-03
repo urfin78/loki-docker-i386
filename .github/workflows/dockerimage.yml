@@ -31,7 +31,7 @@ jobs:
 
     - name: Build latest image
       id: build-latest-image
-      uses: redhat-actions/buildah-build@v2
+      uses: redhat-actions/buildah-build@v2.5
       with:
         image: loki
         archs: ${{ matrix.arch }}
@@ -96,7 +96,7 @@ jobs:
 
     - name: Build version image
       id: build-version-image
-      uses: redhat-actions/buildah-build@v2
+      uses: redhat-actions/buildah-build@v2.5
       with:
         image: loki
         archs: ${{ matrix.arch }}
