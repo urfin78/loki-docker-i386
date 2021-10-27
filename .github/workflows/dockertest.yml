@@ -30,7 +30,7 @@ jobs:
         printf "[storage.options]\nmount_program=\"/usr/bin/fuse-overlayfs\"" > ~/.config/containers/storage.conf
 
     - name: Build latest image
-      uses: redhat-actions/buildah-build@v2.5
+      uses: redhat-actions/buildah-build@v2.8
       with:
         image: loki
         archs: ${{ matrix.arch }}
@@ -80,7 +80,7 @@ jobs:
         printf "[storage.options]\nmount_program=\"/usr/bin/fuse-overlayfs\"" > ~/.config/containers/storage.conf
 
     - name: Build version image
-      uses: redhat-actions/buildah-build@v2.5
+      uses: redhat-actions/buildah-build@v2.8
       with:
         image: loki
         archs: ${{ matrix.arch }}
