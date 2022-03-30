@@ -1,4 +1,4 @@
-ARG BUILD_IMAGE=registry.hub.docker.com/grafana/loki-build-image:0.13.0
+ARG BUILD_IMAGE=registry.hub.docker.com/grafana/loki-build-image:0.21.0
 FROM --platform=linux/amd64 $BUILD_IMAGE as build
 ARG VERSION
 ARG GOARCH
