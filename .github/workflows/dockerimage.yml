@@ -70,7 +70,7 @@ jobs:
       run: |
         export LOKI_LATEST=$(curl -s "https://api.github.com/repos/grafana/loki/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
         echo "VERSION=$LOKI_LATEST" >> ${GITHUB_ENV}
-        echo "::set-output name=version::$LOKI_LATEST"
+        echo "version=$LOKI_LATEST" >> ${GITHUB_OUTPUT}
       shell: bash
 
     - name: check if latest loki is already a package version
