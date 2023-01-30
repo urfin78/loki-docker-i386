@@ -16,7 +16,7 @@ COPY --from=build /src/loki/cmd/loki/loki-local-config.yaml /etc/loki/local-conf
 RUN addgroup -g 3100 -S loki && adduser -u 3100 -S loki -G loki
 RUN chown -R 3100:3100 /etc/loki /loki
 # See https://github.com/grafana/loki/issues/1928
-RUN [ ! -e /etc/nsswitch.conf ] && echo 'hosts: files dns' > /etc/nsswitch.conf
+RUN echo 'hosts: files dns' > /etc/nsswitch.conf
 USER loki
 EXPOSE 3100
 ENTRYPOINT [ "/usr/bin/loki" ]
