@@ -24,7 +24,7 @@ jobs:
       run: sudo podman run --rm --privileged multiarch/qemu-user-static --reset -p yes
 
     - name: Build latest image
-      uses: redhat-actions/buildah-build@v2.11
+      uses: redhat-actions/buildah-build@v2.12
       with:
         image: loki
         archs: ${{ matrix.arch }}
@@ -68,7 +68,7 @@ jobs:
       if: env.VERSION != env.AVAIL
     
     - name: Build version image
-      uses: redhat-actions/buildah-build@v2.11
+      uses: redhat-actions/buildah-build@v2.12
       with:
         image: loki
         archs: ${{ matrix.arch }}
