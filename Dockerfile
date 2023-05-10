@@ -8,7 +8,7 @@ WORKDIR /src/loki
 RUN if [ $VERSION != "master" ]; then git checkout tags/$VERSION; fi
 RUN make clean && GOARCH=$GOARCH make BUILD_IN_CONTAINER=false loki
 
-FROM registry.hub.docker.com/library/alpine:3.17.2
+FROM registry.hub.docker.com/library/alpine:3.18.0
 RUN apk add --no-cache ca-certificates
 RUN mkdir -p /etc/loki /loki
 COPY --from=build /src/loki/cmd/loki/loki /usr/bin/loki
