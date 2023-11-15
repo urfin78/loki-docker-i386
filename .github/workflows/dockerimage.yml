@@ -35,6 +35,7 @@ jobs:
         build-args: |
           VERSION=master
           GOARCH=${{ matrix.arch }}
+        layers: true
 
     - name: Push latest image to ghcr
       uses: redhat-actions/push-to-registry@v2.7
