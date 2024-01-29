@@ -1,6 +1,6 @@
 ARG BUILD_IMAGE=registry.hub.docker.com/grafana/loki-build-image:0.32.0
 
-FROM registry.hub.docker.com/library/alpine:3.18.2 as target
+FROM registry.hub.docker.com/library/alpine:3.19.1 as target
 
 FROM --platform=linux/amd64 $BUILD_IMAGE as build
 ARG VERSION
