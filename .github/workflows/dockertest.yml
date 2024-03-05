@@ -24,7 +24,7 @@ jobs:
       run: sudo podman run --rm --privileged docker.io/tonistiigi/binfmt --install all
 
     - name: Build latest image
-      uses: redhat-actions/buildah-build@v2.12
+      uses: redhat-actions/buildah-build@v2.13
       with:
         image: loki
         archs: ${{ matrix.arch }}
@@ -69,7 +69,7 @@ jobs:
       if: env.VERSION != env.AVAIL
     
     - name: Build version image
-      uses: redhat-actions/buildah-build@v2.12
+      uses: redhat-actions/buildah-build@v2.13
       with:
         image: loki
         archs: ${{ matrix.arch }}
