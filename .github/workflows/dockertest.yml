@@ -18,7 +18,7 @@ jobs:
         arch: [amd64, arm64, 386]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
     - name: Prepare multiarch
       run: sudo podman run --rm --privileged docker.io/tonistiigi/binfmt --install all
@@ -45,7 +45,7 @@ jobs:
         arch: [amd64, arm64, 386]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     
     - name: Get latest Loki release
       run: |
