@@ -1,4 +1,4 @@
-ARG BUILD_IMAGE=registry.hub.docker.com/grafana/loki-build-image:0.34.6
+ARG BUILD_IMAGE=registry.hub.docker.com/grafana/loki-build-image:0.34.9
 
 FROM registry.hub.docker.com/library/alpine:3.23 as target
 
